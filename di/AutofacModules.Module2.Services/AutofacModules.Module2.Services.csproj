@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutofacModules.Core\AutofacModules.Core.csproj" />
+    <ProjectReference Include="..\AutofacModules.Module1.Abstraction\AutofacModules.Module1.Abstraction.csproj" />
+    <ProjectReference Include="..\AutofacModules.Module2.Abstraction\AutofacModules.Module2.Abstraction.csproj" />
+    <ProjectReference Include="..\AutofacModules.Module2.Model\AutofacModules.Module2.Model.csproj" />
+  </ItemGroup>
+
+</Project>
