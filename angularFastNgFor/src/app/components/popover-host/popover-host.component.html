@@ -1,0 +1,19 @@
+<button type="button"
+        class="btn btn-outline-primary"
+        [ngbPopover]="popoverContent"
+        popover-append-to-body="true"
+        popover-animation="true"
+        autoClose="outside"
+        triggers="false"
+        placement="bottom"
+        (click)="onClick($event)"
+        #popover="ngbPopover">
+    Open popover
+</button>
+<ng-template #popoverContent>
+    <ul style="width: 200px;height: 200px; overflow: auto;">
+        <li *lazyFor="let item of items">
+            <app-popover-item [name]="item.name" [data]="item.data"></app-popover-item>
+        </li>
+    </ul>
+</ng-template>
