@@ -5,19 +5,30 @@
     <script type="application/javascript">
 
         const svgNS = "http://www.w3.org/2000/svg";
-
+        let svgCoordinates;
+        let elements;
+        let tooltip;
         function draw() {
+
+            elements = document.getElementsByClassName('container');
+            tooltip = document.getElementById('tooltip');
+            const parent = document.getElementById('svg-parent');
+            parent.addEventListener("mouseover", onMouseHover);
+            parent.addEventListener("mousemove", onMouseHover);
+            parent.addEventListener("mouseout", onMouseUnhover);
+
+
+
 
             let array = [12, 14, 43, 34, 45, 45, 22, 33];
             const width = 300;
-            const height = 200;
+            const height = 256;
             const max = Math.max.apply(Math, array);
 
             const svg = document.getElementsByTagName('svg')[0];
-            const coordinates = getCoordinates(array, width, height, max);
-            console.log(coordinates);
-            drawLine(svg, coordinates);
-            drawCircles(svg, coordinates);
+            svgCoordinates = getCoordinates(array, width, height, max);
+            drawLine(svg, svgCoordinates);
+            drawCircles(svg, svgCoordinates);
         }
 
         function drawLine(container, coordinates) {
@@ -27,7 +38,6 @@
                 const command = i === 0 ? 'M' : 'L';
                 d += command + ' ' + coordinate.x + ' ' + coordinate.y + ' ';
             }
-            console.log(d);
             const path = document.createElementNS(svgNS, "path");
             path.setAttributeNS(null, 'data-z-index', 1);
             path.setAttributeNS(null, 'stroke', '#7cb5ec');
@@ -72,12 +82,106 @@
             return coordinates;
         }
 
+        function onMouseHover(event) {
+
+            var bounds = event.target.getBoundingClientRect();
+            var x = event.clientX - bounds.left;
+            var y = event.clientY - bounds.top;
+
+
+            var targetDiv = Math.floor(y / 30);
+            if (targetDiv > 7) {
+                targetDiv = 7;
+            }
+            if (targetDiv >= 0) {
+                setHoverable(targetDiv, x, y);
+            }
+        }
+
+        function onMouseUnhover(event) {
+            setUnhoverable();
+        }
+
+        var timeoutId;
+        var currentTarget = -1;
+        function setHoverable(target, x, y) {
+            if (currentTarget === target) { return; }
+
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+
+            timeoutId = setTimeout(function () {
+                console.log('set');
+                if (currentTarget >= 0) {
+                    elements[currentTarget].classList.remove('hoverable');
+                }
+                elements[target].classList.add('hoverable');
+                currentTarget = target;
+                showTooltip(x, y);
+
+            });
+
+        }
+
+        function setUnhoverable() {
+            if (currentTarget >= 0) {
+                elements[currentTarget].classList.remove('hoverable');
+                currentTarget = -1;
+            }
+            hideTooltip();
+        }
+
+        function showTooltip(x, y) {
+            tooltip.style.display = "block";
+            tooltip.style.top = y + 'px';
+            tooltip.style.left = x + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.style.display = "none";;
+        }
     </script>
 </head>
 
 <body onload="draw();" style="display: flex; align-items: center; justify-content: center;">
-    <div style="width:100%; height: 100%">
-        <svg style="width:100%; height: 100%;"></svg>
+    <style>
+        .container {
+            width: 300px;
+            height: 30px;
+            border: 1px solid black;
+        }
+
+        .container.hoverable {
+            background-color: red;
+        }
+
+        .tooltip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid black;
+            display: none;
+        }
+    </style>
+    <div style="position: relative;">
+        <div>
+            <div class="container"></div>
+            <div class="container"></div>
+            <div class="container"></div>
+            <div class="container"></div>
+            <div class="container"></div>
+            <div class="container"></div>
+            <div class="container"></div>
+            <div class="container"></div>
+        </div>
+        <div id="svg-parent" style="position: absolute; top:0; left:0;width:100%; height: 100%">
+            <svg style="width:100%; height: 100%;"></svg>
+            <div id="tooltip" class="tooltip">
+                <h1>babuta</h1>
+            </div>
+        </div>
     </div>
 </body>
 
